@@ -16,7 +16,7 @@ export interface Document {
 
 @Injectable({ providedIn: 'root' })
 export class DocumentService {
-  private api =  'http://localhost:3000/api/documents';
+  private api =  'https://task-manegement.onrender.com/api/documents';
 
   constructor(private http: HttpClient) {}
 
