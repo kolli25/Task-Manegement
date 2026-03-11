@@ -1,4 +1,4 @@
-require('dotenv').config();  // ← Must be FIRST!
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -15,13 +15,17 @@ mongoose.connect(process.env.MONGODB_URI, {
   .then(() => console.log('✅ MongoDB Connected Successfully!'))
   .catch(err => console.error('❌ MongoDB Connection Error:', err));
 
+// ✅ Task Routes
 app.use('/api/tasks', require('./routes/task.routes'));
 
+// ✅ Document Routes (Add this!)
+app.use('/api/documents', require('./routes/document.routes'));
+
 app.get('/', (req, res) => {
-  res.json({ message: '🚀 Task Management API is Running!' });
+  res.json({ message: ' Task Management API is Running!' });
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(` Server running on http://localhost:${PORT}`);
 });

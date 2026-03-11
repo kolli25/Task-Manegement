@@ -1,0 +1,258 @@
+<nz-layout style="min-height: 100vh; background: #f0f2f5">
+
+  <!-- Header -->
+  <div style="
+      background: linear-gradient(135deg, #722ed1 0%, #531dab 100%);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);">
+
+    <div style="display: flex; align-items: center; gap: 12px">
+      <span nz-icon nzType="file-text"
+            style="font-size: 28px; color: white"></span>
+      <span style="color: white; font-size: 20px;
+                   font-weight: 700; letter-spacing: 0.5px">
+        Document Management System
+      </span>
+    </div>
+
+  </div>
+
+  <!-- Content -->
+  <nz-content style="padding: 32px">
+    <nz-card style="border-radius: 12px;
+                    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08)">
+
+      <!-- Title Left, Button Right -->
+      <div style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 16px;">
+
+        <!-- Left: Title -->
+        <div>
+          <h3 style="margin: 0; font-size: 16px; font-weight: 600">
+            All Documents
+          </h3>
+          <p style="margin: 0; color: #8c8c8c; font-size: 13px">
+            Manage all your documents
+          </p>
+        </div>
+
+        <!-- Right: Button -->
+        <button nz-button
+                nzType="primary"
+                (click)="openAddModal()"
+                style="
+                  background: #722ed1;
+                  border-color: #722ed1;
+                  font-weight: 600;
+                  border-radius: 8px;
+                  height: 38px;
+                  padding: 0 20px;">
+          <span nz-icon nzType="plus"></span>
+          Add Document
+        </button>
+
+      </div>
+
+      <!-- Table with Spinner -->
+      <nz-spin [nzSpinning]="isLoading" nzTip="Loading documents...">
+        <nz-table
+          #docTable
+          [nzData]="documents"
+          nzBordered
+          [nzPageSize]="10"
+          style="border-radius: 8px; overflow: hidden; min-height: 200px">
+
+          <thead>
+            <tr>
+              <th style="font-weight: 700; color: #262626;
+                         width: 80px; text-align: center">
+                Actions
+              </th>
+              <th style="font-weight: 700; color: #262626">S.No</th>
+              <th style="font-weight: 700; color: #262626">Title</th>
+              <th style="font-weight: 700; color: #262626;
+                         text-align: center">Required</th>
+              <th style="font-weight: 700; color: #262626;
+                         text-align: center">Upload Required</th>
+              <th style="font-weight: 700; color: #262626;
+                         text-align: center">Is Related</th>
+              <th style="font-weight: 700; color: #262626;
+                         text-align: center">Has Documents</th>
+              <th style="font-weight: 700; color: #262626;
+                         text-align: center">Per Site</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let doc of docTable.data; let i = index">
+
+              <!-- 3 Dots Action Menu -->
+              <td style="text-align: center">
+                <a nz-dropdown
+                   [nzDropdownMenu]="menu"
+                   nzTrigger="click"
+                   style="
+                     font-size: 20px;
+                     font-weight: bold;
+                     color: #595959;
+                     letter-spacing: 2px;
+                     cursor: pointer;">
+                  ⋮
+                </a>
+                <nz-dropdown-menu #menu="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li nz-menu-item
+                        (click)="openEditModal(doc)"
+                        style="color: #1890ff">
+                      <span nz-icon nzType="edit"></span>
+                      Edit
+                    </li>
+                    <li nz-menu-item
+                        nz-popconfirm
+                        nzPopconfirmTitle="Are you sure you want to delete?"
+                        nzPopconfirmPlacement="right"
+                        (nzOnConfirm)="deleteDocument(doc._id!)"
+                        style="color: #ff4d4f">
+                      <span nz-icon nzType="delete"></span>
+                      Delete
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </td>
+
+              <!-- S.No -->
+              <td>
+                <span style="
+                    background: #f9f0ff;
+                    color: #722ed1;
+                    padding: 2px 8px;
+                    border-radius: 4px;
+                    font-weight: 600;
+                    font-size: 12px;">
+                  {{ i + 1 }}
+                </span>
+              </td>
+
+              <!-- Title -->
+              <td style="font-weight: 500">{{ doc.title }}</td>
+
+              <!-- Boolean Tags -->
+              <td style="text-align: center">
+                <nz-tag [nzColor]="getBooleanColor(doc.required)">
+                  {{ doc.required ? 'True' : 'False' }}
+                </nz-tag>
+              </td>
+              <td style="text-align: center">
+                <nz-tag [nzColor]="getBooleanColor(doc.uploadRequired)">
+                  {{ doc.uploadRequired ? 'True' : 'False' }}
+                </nz-tag>
+              </td>
+              <td style="text-align: center">
+                <nz-tag [nzColor]="getBooleanColor(doc.isRelated)">
+                  {{ doc.isRelated ? 'True' : 'False' }}
+                </nz-tag>
+              </td>
+              <td style="text-align: center">
+                <nz-tag [nzColor]="getBooleanColor(doc.hasDocuments)">
+                  {{ doc.hasDocuments ? 'True' : 'False' }}
+                </nz-tag>
+              </td>
+              <td style="text-align: center">
+                <nz-tag [nzColor]="getBooleanColor(doc.perSite)">
+                  {{ doc.perSite ? 'True' : 'False' }}
+                </nz-tag>
+              </td>
+
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-spin>
+
+    </nz-card>
+  </nz-content>
+</nz-layout>
+
+<!-- Add/Edit Modal -->
+<nz-modal
+  [(nzVisible)]="isModalVisible"
+  [nzTitle]="isEditMode ? ' Edit Document' : ' Add Document'"
+  [nzOkText]="isEditMode ? 'Update' : 'Submit'"
+  nzOkType="primary"
+  (nzOnOk)="submitForm()"
+  (nzOnCancel)="closeModal()"
+  [nzWidth]="600">
+
+  <ng-container *nzModalContent>
+    <form nz-form [formGroup]="form" nzLayout="vertical">
+
+      <!-- Title -->
+      <nz-form-item>
+        <nz-form-label nzRequired>Title</nz-form-label>
+        <nz-form-control nzErrorTip="Title is required (min 3 characters)">
+          <input nz-input
+                 formControlName="title"
+                 placeholder="Enter document title"/>
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- Checkboxes - All Aligned! -->
+      <nz-form-item>
+        <nz-form-label>Document Properties</nz-form-label>
+        <nz-form-control>
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+
+            <!--Each checkbox same structure -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <label nz-checkbox formControlName="required"></label>
+              <span style="font-weight: 500; min-width: 130px;">Required</span>
+              <span style="color: #8c8c8c; font-size: 12px;">
+                Is this document required?
+              </span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <label nz-checkbox formControlName="uploadRequired"></label>
+              <span style="font-weight: 500; min-width: 130px;">Upload Required</span>
+              <span style="color: #8c8c8c; font-size: 12px;">
+                Is upload required?
+              </span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <label nz-checkbox formControlName="isRelated"></label>
+              <span style="font-weight: 500; min-width: 130px;">Is Related</span>
+              <span style="color: #8c8c8c; font-size: 12px;">
+                Is this document related?
+              </span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <label nz-checkbox formControlName="hasDocuments"></label>
+              <span style="font-weight: 500; min-width: 130px;">Has Documents</span>
+              <span style="color: #8c8c8c; font-size: 12px;">
+                Does this have documents?
+              </span>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <label nz-checkbox formControlName="perSite"></label>
+              <span style="font-weight: 500; min-width: 130px;">Per Site</span>
+              <span style="color: #8c8c8c; font-size: 12px;">
+                Is this per site?
+              </span>
+            </div>
+
+          </div>
+        </nz-form-control>
+      </nz-form-item>
+
+    </form>
+  </ng-container>
+</nz-modal>

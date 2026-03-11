@@ -1,12 +1,36 @@
-<!-- NG-ZORRO -->
-<a
-  href="https://github.com/NG-ZORRO/ng-zorro-antd"
-  target="_blank"
-  style="display: flex; align-items: center; justify-content: center; height: 100%; width: 100%"
->
-  <img
-    height="300"
-    alt="logo"
-    src="https://img.alicdn.com/tfs/TB1X.qJJgHqK1RjSZFgXXa7JXXa-89-131.svg"
-  />
-</a>
+<!-- Navigation Bar -->
+<div style="background: #001529;
+            padding: 0 32px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            height: 48px;">
+
+  <a routerLink="/tasks"
+     routerLinkActive="active-link"
+     style="color: #ffffff99;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 6px;
+            transition: all 0.3s;">
+    📋 Tasks
+  </a>
+
+  <a routerLink="/documents"
+     routerLinkActive="active-link"
+     style="color: #ffffff99;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 6px;
+            transition: all 0.3s;">
+    📄 Documents
+  </a>
+
+</div>
+
+<!-- Page Content -->
+<router-outlet></router-outlet>
